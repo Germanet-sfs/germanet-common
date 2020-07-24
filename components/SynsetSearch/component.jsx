@@ -193,7 +193,8 @@ function SynsetSearchForm(props) {
                  <TextInput id={`${props.id}-editDistance`} label="Edit distance"
                             name="editDistance"
                             type="number"
-                            min={0} // TODO: max??
+                            min={0} 
+                            max={5}
                             defaultValue={props.params.editDistance}
                             asGroup={false}  
                             readOnly={props.params.regEx}
