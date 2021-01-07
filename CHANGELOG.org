@@ -1,5 +1,11 @@
 * 1.x
 
+** 1.4.7
+
+This release is mainly for security updates in dependencies. The only
+change in the library's code is that SynsetSearchForm now has a
+max value of 5 for the editDistance field.
+   
 ** 1.4.6
 
 This release adds some small conveniences:
