@@ -1,5 +1,9 @@
 * 1.x
 
+** 1.4.8
+
+This release contains only security updates in dependencies.
+   
 ** 1.4.7
 
 This release is mainly for security updates in dependencies. The only
