@@ -1,5 +1,9 @@
 * 1.x
 
+** 1.4.11
+
+This release contains only security updates in dependencies.
+
 ** 1.4.10
 
 This release contains only security updates in dependencies.
