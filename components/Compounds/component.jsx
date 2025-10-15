@@ -25,7 +25,7 @@ import { DataList,
 import { dataContainerFor } from '../DataContainer/component';
 import { connectWithApiQuery } from '../APIWrapper';
 import { withNullAsString } from '../../helpers';
-import { SearchableOrthForm } from '../SearchableOrthForm/component'; // Assuming the new component is in this file/folder
+import { SearchableOrthForm } from '../SearchableOrthForm/component'; // Path might differ
 
 import React from 'react';
 
@@ -75,14 +75,12 @@ function CompoundAsTableRow(props) {
     );
 }
 
-// NEW COMPONENT: Renders a single row in the compound grid.
-// It knows that the 'orthForm' property is a component and renders it correctly.
+// Renders a single row in the compound grid.
 function CompoundGridRow(props) {
     const rowData = props.data;
     return (
         <tr key={rowData.key}>
             <td>{rowData.title}</td>
-            {/* The crucial part: we render the component passed in orthForm directly */}
             <td>{rowData.orthForm}</td>
             <td>{rowData.property}</td>
             <td>{rowData.category}</td>
@@ -102,7 +100,6 @@ function CompoundAsGrid(props) {
                       ['orthForm', 'Orth Form'],
                       ['property', 'Property'],
                       ['category', 'Category']];
-    // This is still needed for the table header (thead)
     const displayFields = fieldMap.map(field => field[0]);
 
     // Helper to get valid, non-empty IDs from a modifier object
@@ -118,19 +115,22 @@ function CompoundAsGrid(props) {
     const head = props.data.head.merge({
         title: 'Head', 
         key: 'head',
-        orthForm: <SearchableOrthForm orthForm={props.data.head.orthForm} lexUnitIds={headIds} buttonExtras={props.buttonExtras} />
+        // No longer need to pass buttonExtras
+        orthForm: <SearchableOrthForm orthForm={props.data.head.orthForm} lexUnitIds={headIds} />
     });
     
     const mod1 = props.data.modifier1.merge({
         title: 'Modifier 1', 
         key: 'mod1',
-        orthForm: <SearchableOrthForm orthForm={props.data.modifier1.orthForm} lexUnitIds={mod1Ids} buttonExtras={props.buttonExtras} />
+        // No longer need to pass buttonExtras
+        orthForm: <SearchableOrthForm orthForm={props.data.modifier1.orthForm} lexUnitIds={mod1Ids} />
     });
 
     const mod2 = props.data.modifier2.merge({
         title: 'Modifier 2', 
         key: 'mod2',
-        orthForm: <SearchableOrthForm orthForm={props.data.modifier2.orthForm} lexUnitIds={mod2Ids} buttonExtras={props.buttonExtras} />
+        // No longer need to pass buttonExtras
+        orthForm: <SearchableOrthForm orthForm={props.data.modifier2.orthForm} lexUnitIds={mod2Ids} />
     });
 
     const constituents = [head, mod1, mod2];
@@ -140,7 +140,6 @@ function CompoundAsGrid(props) {
                    data={constituents} idFor={obj => obj.key}
                    fieldMap={fieldMap} 
                    displayFields={displayFields}
-                   // THIS IS THE FIX: Tell DataTable to use our custom row renderer
                    displayItemAs={CompoundGridRow} />
     );
 }

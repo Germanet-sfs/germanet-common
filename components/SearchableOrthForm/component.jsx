@@ -1,37 +1,37 @@
+import React from 'react';
 import { connect } from 'react-redux';
-import { Button } from '../GenericForms/component';
 import { doSearch, updateSearchParams } from '../SynsetSearch/actions';
 
-import React from 'react';
-
 function SearchableOrthFormComponent(props) {
-    const { orthForm, lexUnitIds, buttonExtras, triggerSearch, updateSearchForm } = props;
+    // Destructure props, removing 'buttonExtras' as it's no longer needed
+    const { orthForm, lexUnitIds, triggerSearch, updateSearchForm } = props;
 
-    // If there are no IDs, we can't search, so just render the text.
-    if (!lexUnitIds || lexUnitIds.length === 0) {
-        return <span>{orthForm}</span>;
-    }
-
-    const handleSearchClick = () => {
+    const handleSearchClick = (e) => {
+        // Prevent the default link action (navigating to '#')
+        e.preventDefault(); 
+        
         const idsAsString = lexUnitIds.join(',');
-        // Dispatch actions to perform search and update the form text
         updateSearchForm(orthForm);
-        triggerSearch(orthForm, false, idsAsString); // NOTE: doSearch signature updated
+        triggerSearch(orthForm, false, idsAsString);
     };
 
-    // Render as a clickable button-like element, using the passed-in styles
-    return (
-        <Button
-            text={orthForm}
-            onClick={handleSearchClick}
-            extras={buttonExtras} // Use the prop here
-        />
-    );
+    // If there are valid IDs, render a clickable `<a>` tag.
+    // This gives us the standard blue, underlined link appearance.
+    if (lexUnitIds && lexUnitIds.length > 0) {
+        return (
+            <a href="#" onClick={handleSearchClick}>
+                {orthForm}
+            </a>
+        );
+    }
+
+    // Otherwise, render the plain text in a `<span>`.
+    // Since both `<a>` and `<span>` are inline elements, they will align properly.
+    return <span>{orthForm}</span>;
 }
 
 const mapDispatchToProps = dispatch => ({
     updateSearchForm: (word) => dispatch(updateSearchParams("wordSearchForm", { word: word })),
-    // Ensure doSearch in actions.js is updated for this signature
     triggerSearch: (word, ignoreCase, lexUnitIds) => dispatch(doSearch("wordSearchForm", word, ignoreCase, lexUnitIds)),
 });
 
