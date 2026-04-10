@@ -25,6 +25,7 @@ import { DataList,
 import { dataContainerFor } from '../DataContainer/component';
 import { connectWithApiQuery } from '../APIWrapper';
 import { withNullAsString } from '../../helpers';
+import { SearchableOrthForm } from '../SearchableOrthForm/component'; // Path might differ
 
 import React from 'react';
 
@@ -74,6 +75,19 @@ function CompoundAsTableRow(props) {
     );
 }
 
+// Renders a single row in the compound grid.
+function CompoundGridRow(props) {
+    const rowData = props.data;
+    return (
+        <tr key={rowData.key}>
+            <td>{rowData.title}</td>
+            <td>{rowData.orthForm}</td>
+            <td>{rowData.property}</td>
+            <td>{rowData.category}</td>
+        </tr>
+    );
+}
+
 // props:
 //   data :: DataObject, the compound 
 // Other props will also be passed on to DataTable, including:
@@ -88,15 +102,45 @@ function CompoundAsGrid(props) {
                       ['category', 'Category']];
     const displayFields = fieldMap.map(field => field[0]);
 
-    const head = props.data.head.merge({title: 'Head', key: 'head'});
-    const mod1 = props.data.modifier1.merge({title: 'Modifier 1', key: 'mod1'});
-    const mod2 = props.data.modifier2.merge({title: 'Modifier 2', key: 'mod2'});
+    // Helper to get valid, non-empty IDs from a modifier object
+    const getModifierIds = (modifier) => {
+        if (!modifier) return [];
+        return [modifier.id, modifier.id2, modifier.id3].filter(id => id && id.trim() !== '');
+    };
+    
+    const headIds = (props.data.head.id && props.data.head.id.trim() !== '') ? [props.data.head.id] : [];
+    const mod1Ids = getModifierIds(props.data.modifier1);
+    const mod2Ids = getModifierIds(props.data.modifier2);
+
+    const head = props.data.head.merge({
+        title: 'Head', 
+        key: 'head',
+        // No longer need to pass buttonExtras
+        orthForm: <SearchableOrthForm orthForm={props.data.head.orthForm} lexUnitIds={headIds} />
+    });
+    
+    const mod1 = props.data.modifier1.merge({
+        title: 'Modifier 1', 
+        key: 'mod1',
+        // No longer need to pass buttonExtras
+        orthForm: <SearchableOrthForm orthForm={props.data.modifier1.orthForm} lexUnitIds={mod1Ids} />
+    });
+
+    const mod2 = props.data.modifier2.merge({
+        title: 'Modifier 2', 
+        key: 'mod2',
+        // No longer need to pass buttonExtras
+        orthForm: <SearchableOrthForm orthForm={props.data.modifier2.orthForm} lexUnitIds={mod2Ids} />
+    });
+
     const constituents = [head, mod1, mod2];
     
     return (
         <DataTable {...props}
                    data={constituents} idFor={obj => obj.key}
-                   fieldMap={fieldMap} displayFields={displayFields} />
+                   fieldMap={fieldMap} 
+                   displayFields={displayFields}
+                   displayItemAs={CompoundGridRow} />
     );
 }
 
@@ -144,5 +188,4 @@ export { CompoundsContainer,
          CompoundsAsList,
          CompoundsAsTable,
          CompoundAsGrid
-       }; 
-
+       };
