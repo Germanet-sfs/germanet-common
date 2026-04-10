@@ -12,6 +12,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
+
+
+
+
+
 // You should have received a copy of the GNU Lesser General Public License
 // along with germanet-common.  If not, see <https://www.gnu.org/licenses/>.
 
@@ -94,9 +99,10 @@ export function clearHistory(id, removePersisted) {
 //     data submitted by a SynsetSearchForm. It must contain a string
 //     value for the 'word' property; all other properties are
 //     optional. These include:
-//       ignoreCase :: Boolean
-//       regEx :: Boolean
+//       ignoreCase :: Boolean or String ("on")
+//       regEx :: Boolean or String ("on")
 //       editDistance :: String for Integer > 0 (invalid if regEx is true)
+//       lexUnitIds :: String (comma-separated list of IDs)
 //     as well as any of the Boolean flags for word categories, word classes, and
 //     orthographic variants which are submitted from the advanced search form. 
 //     See SynsetSearchForm for all possible options.
@@ -116,26 +122,26 @@ export function doAdvancedSearch(id, params, keepState) {
     };
 }
 
-// This wrapper provides backward-compatible support for the signature
-// of doSearch() up through version 1.2.5, where the only search
-// option was a boolean flag for ignoring case. We can remove it in
-// 2.0 and rename doAdvancedSearch to doSearch:
-export function doSearch(id, word, ignoreCase) {
-    return doAdvancedSearch(id, { word, ignoreCase }, false);
+// This wrapper provides backward-compatible support for simple searches.
+// Updated to accept optional lexUnitIds string. If not provided, it is undefined
+// and ignored by asSearchQueryParams.
+export function doSearch(id, word, ignoreCase, lexUnitIds) {
+    return doAdvancedSearch(id, { word, ignoreCase, lexUnitIds }, false);
 }
 
 // Helper to prepare a query params object from the raw form data
-// submitted by a SynsetSearchForm. Converts checkbox values to
-// booleans and creates the comma-separated lists for wordCategories,
-// wordClasses, etc. that are accepted as query parameters by the
-// backend.
+// submitted by a SynsetSearchForm, or passed via doSearch.
 function asSearchQueryParams(formData) {
-    const { word, ignoreCase, regEx, editDistance, ...checkboxes } = formData;
+    // Extract lexUnitIds along with other parameters
+    const { word, ignoreCase, regEx, editDistance, lexUnitIds, ...checkboxes } = formData;
+
+    // Handle ignoreCase/regEx whether they come from checkboxes ("on") or direct boolean calls
+    const isOn = (val) => val === "on" || val === true;
 
     var params = {
         word,
-        ignoreCase: ignoreCase === "on",
-        regEx: regEx === "on",
+        ignoreCase: isOn(ignoreCase),
+        regEx: isOn(regEx),
         editDistance
     };
 
@@ -143,6 +149,11 @@ function asSearchQueryParams(formData) {
     // the UI already makes clear that this is not supported.
     if (params.regEx) {
         delete params.editDistance;
+    }
+
+    // Add lexUnitIds if present as a non-empty string
+    if (lexUnitIds && typeof lexUnitIds === 'string' && lexUnitIds.length > 0) {
+        params.lexUnitIds = lexUnitIds;
     }
     
     // convert other checkbox values to comma-separated lists for the backend:

@@ -1,7 +1,7 @@
 {
   "name": "@sfstuebingen/germanet-common",
   "homepage": "http://www.sfs.uni-tuebingen.de/GermaNet/",
-  "version": "1.4.11",
+  "version": "1.4.13",
   "description": "Common React components for GermaNet-related web UIs",
   "module": "index.js",
   "author": "Richard Lawrence",
@@ -15,7 +15,7 @@
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
     "@babel/preset-react": "^7.9.4",
-    "axios": "^0.21.1",
+    "axios": "^1.15.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
@@ -23,7 +23,7 @@
     "seamless-immutable": "^7.1.4"
   },
   "peerDependencies": {
-    "axios": "^0.21.1",
+    "axios": "^1.15.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-redux": "^7.1.0",
