@@ -32,6 +32,10 @@ export const EXAMPLE_FIELD_MAP = [
     ['id', 'Example Id'],
     ['text', 'Text'],
     ['frameType', 'Frame Type'],
+    ['llmModel', 'LLM Model'],
+    ['llmVersion', 'LLM Version'],
+    ['dateCreated', 'Date Created'],
+    ['edited', 'Edited']
 ];
 export const EXAMPLE_ALL_FIELDS = EXAMPLE_FIELD_MAP.map(entry => entry[0]);
 
@@ -47,11 +51,19 @@ function ExampleAsListItem(props) {
           ? props.data.frameType + " \u2013 " // &ndash;
           : null;
 
+    const llmInfo = props.data.llmModel
+          ? ` [${props.data.llmModel} ${props.data.llmVersion}]`
+          : null;
+
+    const editedInfo = props.data.edited
+          ? " \u2013 edited"
+          : null;
+
     return (
         <ListItem key={props.data.id}
                   className={props.className}
                   extras={props.extras}>
-          {frameTypeWithDash} {props.data.text}  
+          {frameTypeWithDash}{props.data.text}{llmInfo}{editedInfo}
         </ListItem>
     );
 }
@@ -113,5 +125,4 @@ ExamplesContainer = connectWithApiQuery(ExamplesContainer, examplesQueries.query
 export { ExamplesContainer,
          ExamplesAsDefList,
          ExamplesAsList,
-         ExamplesAsTable }; 
-
+         ExamplesAsTable };

@@ -6,10 +6,21 @@
   "module": "index.js",
   "author": "Richard Lawrence",
   "license": "LGPL-3.0-or-later",
-  "scripts": {
-    "build": "find . -name '*.jsx' | xargs babel --presets '@babel/react' -d '.' --relative --verbose",
-    "prePublishOnly": "npm run build"
-  },
+  "babel": {
+      "presets": [
+        [
+          "@babel/preset-react",
+          {
+            "runtime": "classic",
+            "development": false
+          }
+        ]
+      ]
+    },
+	"scripts": {
+	  "build": "find . -name '*.jsx' | xargs babel -d '.' --relative --verbose",
+	  "prepublishOnly": "npm run build"
+	},
   "devDependencies": {
     "@babel/cli": "^8.0.1",
     "@babel/core": "^8.0.1",
@@ -35,10 +46,10 @@
     "classnames": "^2.2.6",
     "keycharm": "^0.3.1",
     "moment": "^2.25.1",
-	"timsort": "^0.3.0",
-	"vis-data": "^8.0.4",
-	"vis-network": "^10.1.0",
-	"vis-util": "^6.0.0"
+    "timsort": "^0.3.0",
+	"vis-data": "6.5.1",
+	"vis-network": "7.7.0",
+	"vis-util": "4.0.0"
   },
   "keywords": [
     "germanet",
